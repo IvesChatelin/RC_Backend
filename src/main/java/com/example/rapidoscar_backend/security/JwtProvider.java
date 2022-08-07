@@ -1,6 +1,6 @@
 package com.example.rapidoscar_backend.security;
 
-import com.example.rapidoscar_backend.payload.UserPrincipe;
+import com.example.rapidoscar_backend.payload.UserPrincipale;
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,15 +19,16 @@ public class JwtProvider {
     private String jwtSecret;
 
     @Value("${app.jwtExpiration}")
-    private String jwtExpiration;
+    private int jwtExpiration;
 
     public String generateJwtToken(Authentication authentication){
-        UserPrincipe userModel = (UserPrincipe) authentication.getPrincipal();
+        UserPrincipale userModel = (UserPrincipale) authentication.getPrincipal();
+
         return Jwts.builder()
-                .setSubject((userModel.getNom()))
+                .setSubject((userModel.getUsername()))
                 .setId(Long.toString(userModel.getId()))
                 .setIssuedAt(new Date())
-                .setExpiration(new Date((new Date()).getTime() + jwtExpiration))
+                .setExpiration(new Date(new Date().getTime() + jwtExpiration))
                 .signWith(SignatureAlgorithm.HS256,jwtSecret)
                 .compact();
     };

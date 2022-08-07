@@ -1,6 +1,5 @@
 package com.example.rapidoscar_backend.payload;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.example.rapidoscar_backend.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,7 +15,7 @@ import java.util.stream.Collectors;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserPrincipe implements org.springframework.security.core.userdetails.UserDetails {
+public class UserPrincipale implements org.springframework.security.core.userdetails.UserDetails {
 
     private int id;
     private String nom;
@@ -25,29 +24,41 @@ public class UserPrincipe implements org.springframework.security.core.userdetai
     private String email;
     private int numcni;
     private String username;
-
-    @JsonIgnore
-    private String passwd;
+    private String ville;
+    private String adresse;
+    private String password;
 
     private Collection<? extends GrantedAuthority> authorities;
 
-    public UserPrincipe(Integer id, String nom, String prenom, Integer telephone, String email, Integer numcni, String username, List<GrantedAuthority> authorities) {
+    public UserPrincipale(Integer id, String nom, String prenom, Integer telephone, String email, String username, String ville, String adresse, String password, List<GrantedAuthority> authorities) {
+        this.id = id;
+        this.nom = nom;
+        this.prenom = prenom;
+        this.telephone =  telephone;
+        this.email = email;
+        this.username = username;
+        this.ville = ville;
+        this.adresse = adresse;
+        this.password = password;
+        this.authorities = authorities;
     }
 
-    public static UserPrincipe Detail(User user){
+    public static UserPrincipale Detail(User user){
 
-        List<GrantedAuthority> authorities = user.getRoles().stream().map(role ->
-                new SimpleGrantedAuthority(role.getName().name())
+        List<GrantedAuthority> authorities = user.getRole().stream().map(role ->
+                new SimpleGrantedAuthority(role.getNom().name())
         ).collect(Collectors.toList());
 
-        return new UserPrincipe(
+        return new UserPrincipale(
                 user.getId(),
                 user.getNom(),
                 user.getPrenom(),
                 user.getTelephone(),
                 user.getEmail(),
-                user.getNumcni(),
                 user.getUsername(),
+                user.getVille(),
+                user.getAdresse(),
+                user.getPassword(),
                 authorities
         );
 
@@ -55,37 +66,37 @@ public class UserPrincipe implements org.springframework.security.core.userdetai
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return authorities;
     }
 
     @Override
     public String getPassword() {
-        return null;
+        return password;
     }
 
     @Override
     public String getUsername() {
-        return null;
+        return username;
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
     }
 
     @Override
@@ -93,7 +104,7 @@ public class UserPrincipe implements org.springframework.security.core.userdetai
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        UserPrincipe user = (UserPrincipe) o;
+        UserPrincipale user = (UserPrincipale) o;
         return Objects.equals(id, user.id);
     }
 }

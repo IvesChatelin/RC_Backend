@@ -7,7 +7,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoginForm {
-    private String username;
-    private String password;
+public class ResponseImage {
+    private String nom;
+    private String url;
+    private String type;
+    private long size;
+
 }

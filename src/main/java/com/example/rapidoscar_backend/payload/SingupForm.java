@@ -10,10 +10,11 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SingupForm {
-
     private int id;
     private String nom;
     private String prenom;
+    private String Ville;
+    private String adresse;
     private int telephone;
     private String email;
     private int numcni;

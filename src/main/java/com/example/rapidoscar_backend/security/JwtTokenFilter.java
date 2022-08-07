@@ -15,14 +15,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-
 public class JwtTokenFilter extends OncePerRequestFilter {
 
     @Autowired
     private JwtProvider jwtProvider;
 
     @Autowired
-    private UserDetailsService userDetailsService;
+    private UserDetailsServiceImpl userDetailsServiceImpl;
 
     public static final Logger logger = LoggerFactory.getLogger(JwtTokenFilter.class);
 
@@ -32,7 +31,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             String jwt = getToken(request);
             if(jwt != null && jwtProvider.validationToken(jwt)){
                 String username = jwtProvider.getUsernameByToken(jwt);
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                UserDetails userDetails = userDetailsServiceImpl.loadUserByUsername(username);
                 UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
                 auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(auth);

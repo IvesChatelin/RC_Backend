@@ -1,21 +1,22 @@
 package com.example.rapidoscar_backend.security;
 
-import com.example.rapidoscar_backend.payload.UserPrincipe;
-import org.springframework.security.core.userdetails.UserDetails;
 import com.example.rapidoscar_backend.entity.User;
+import com.example.rapidoscar_backend.payload.UserPrincipale;
 import com.example.rapidoscar_backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service
-public class UserDetailsService implements org.springframework.security.core.userdetails.UserDetailsService {
+@Service()
+public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;
 
-    public UserDetailsService(UserRepository userRepository) {
+    public UserDetailsServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
@@ -24,7 +25,7 @@ public class UserDetailsService implements org.springframework.security.core.use
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         try{
             User user = userRepository.findByUsername(username);
-            return UserPrincipe.Detail(user);
+            return UserPrincipale.Detail(user);
         }catch (UsernameNotFoundException e){
             e.getMessage();
             return null;

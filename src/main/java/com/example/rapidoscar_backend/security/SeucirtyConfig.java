@@ -1,8 +1,11 @@
 package com.example.rapidoscar_backend.security;
 
+import com.example.rapidoscar_backend.payload.RoleName;
+import org.apache.catalina.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -23,10 +26,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SeucirtyConfig extends WebSecurityConfigurerAdapter{
 
     @Autowired
-    UserDetailsService userDetailsService;
+    private UserDetailsServiceImpl userDetailsServiceImpl;
 
     @Autowired
-    JwtEntryPoint jwtEntryPoint;
+    private JwtEntryPoint jwtEntryPoint;
 
     @Bean
     public JwtTokenFilter authenticationFilter() {
@@ -37,8 +40,8 @@ public class SeucirtyConfig extends WebSecurityConfigurerAdapter{
     @Override
     public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
         authenticationManagerBuilder
-                .userDetailsService(userDetailsService)
-                .passwordEncoder(passwordEncoder());
+                .userDetailsService(userDetailsServiceImpl)
+                .passwordEncoder( new BCryptPasswordEncoder());
     }
 
     @Bean(BeanIds.AUTHENTICATION_MANAGER)
@@ -57,9 +60,14 @@ public class SeucirtyConfig extends WebSecurityConfigurerAdapter{
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable().
                 authorizeRequests()
-                .antMatchers("/user/all").permitAll()
-                .antMatchers("/auth/singup").permitAll()
+                .antMatchers("/user/all").authenticated()
+                .antMatchers(HttpMethod.POST,"/use/singup").permitAll()
+                .antMatchers(HttpMethod.PUT,"/use/update").authenticated()
+                .antMatchers(HttpMethod.DELETE,"/use/delete").authenticated()
                 .antMatchers("/auth/login").permitAll()
+                .antMatchers("/image/").permitAll()
+                .antMatchers("/categorie/").permitAll()
+                .antMatchers("/location/").permitAll()
                 .anyRequest().permitAll()
                 .and()
                 .exceptionHandling().authenticationEntryPoint(jwtEntryPoint).and()

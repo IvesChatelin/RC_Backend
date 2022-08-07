@@ -15,16 +15,30 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Role implements Serializable {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idrole", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(name = "nom", length = 254)
     @Enumerated(EnumType.STRING)
     @NaturalId
-    @Column(length = 60)
-    private RoleName name;
+    private RoleName nom;
 
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public RoleName getNom() {
+        return nom;
+    }
+
+    public void setNom(RoleName nom) {
+        this.nom = nom;
+    }
 
 }
